@@ -27,8 +27,8 @@ namespace HealthMeasurement.Application.System.Users
             {
                 var privateKey = SystemConstants.HealthMeasurementKey;
                 var Appid = SystemConstants.Appid;
-                var dataEncryptAES = EncryptDecryptAES.EncryptAES(Appid, privateKey);
-                var dataTokenDecrypt =  EncryptDecryptAES.DecryptAES(dataEncryptAES, privateKey);
+                //var dataEncryptAES = EncryptDecryptAES.EncryptAES(Appid, privateKey);
+                var dataTokenDecrypt =  EncryptDecryptAES.DecryptAES(request.MonitorKey, privateKey);
                 if (dataTokenDecrypt != Appid || dataTokenDecrypt==null)
                 {
                     return new ApiErrorResult<string>("Incorrect login");
