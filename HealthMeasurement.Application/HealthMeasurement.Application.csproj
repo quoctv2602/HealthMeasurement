@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Health\Slides\**" />
+    <EmbeddedResource Remove="Health\Slides\**" />
+    <None Remove="Health\Slides\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.15.0" />
+    <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="6.0.1" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.15.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\HealthMeasurement.Data\HealthMeasurement.Data.csproj" />
+    <ProjectReference Include="..\HealthMeasurement.Utilities\HealthMeasurement.Utilities.csproj" />
+    <ProjectReference Include="..\HealthMeasurement.ViewModels\HealthMeasurement.ViewModels.csproj" />
+  </ItemGroup>
+
+</Project>

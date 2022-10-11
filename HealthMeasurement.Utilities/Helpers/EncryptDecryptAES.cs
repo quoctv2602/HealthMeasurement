@@ -1,0 +1,87 @@
+﻿using System;
+using System.IO;
+using System.Security.Cryptography;
+
+namespace HealthMeasurement.Utilities.Helpers
+{
+    public static class EncryptDecryptAES
+    {
+        public static string EncryptAES(string plainText, string aesKey)
+        {
+            try
+            {
+                byte[] encrypted;
+                var aesIv = "";
+                using (AesCryptoServiceProvider aes = new AesCryptoServiceProvider())
+                {
+                    aes.Key = Convert.FromBase64String(aesKey);
+                    aes.GenerateIV();
+                    aes.Mode = CipherMode.CBC;
+                    aes.Padding = PaddingMode.PKCS7;
+
+                    aesIv = Convert.ToBase64String(aes.IV);
+
+                    ICryptoTransform enc = aes.CreateEncryptor(aes.Key, aes.IV);
+
+                    using (MemoryStream ms = new MemoryStream())
+                    {
+                        using (CryptoStream cs = new CryptoStream(ms, enc, CryptoStreamMode.Write))
+                        {
+                            using (StreamWriter sw = new StreamWriter(cs))
+                            {
+                                sw.Write(plainText);
+                            }
+
+                            encrypted = ms.ToArray();
+                        }
+                    }
+
+                }
+                return $"{aesIv}!{Convert.ToBase64String(encrypted)}";
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public static string DecryptAES(string encryptedText, string aesKey)
+        {
+            try
+            {
+                var aesIv = encryptedText.Substring(0, encryptedText.IndexOf("!"));
+                encryptedText = encryptedText.Substring(encryptedText.IndexOf("!") + 1);
+
+                string decrypted = null;
+                byte[] cipher = Convert.FromBase64String(encryptedText);
+
+                using (AesCryptoServiceProvider aes = new AesCryptoServiceProvider())
+                {
+                    aes.Key = Convert.FromBase64String(aesKey);
+                    aes.IV = Convert.FromBase64String(aesIv);
+                    aes.Mode = CipherMode.CBC;
+                    aes.Padding = PaddingMode.PKCS7;
+
+                    ICryptoTransform dec = aes.CreateDecryptor(aes.Key, aes.IV);
+
+                    using (MemoryStream ms = new MemoryStream(cipher))
+                    {
+                        using (CryptoStream cs = new CryptoStream(ms, dec, CryptoStreamMode.Read))
+                        {
+                            using (StreamReader sr = new StreamReader(cs))
+                            {
+                                decrypted = sr.ReadToEnd();
+                            }
+                        }
+                    }
+                }
+
+                return decrypted;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+    }
+}
